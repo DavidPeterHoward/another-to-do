@@ -1,0 +1,94 @@
+{
+  "name": "react-testing-boilerplate",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "engines": {
+    "node": "12.13.1"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "client/*"
+    ],
+    "delay": "0"
+  },
+  "scripts": {
+    "heroku-postbuild": "cd client && yarn && yarn run build",
+    "client": "cd client && yarn start",
+    "server": "nodemon --exec babel-node server/index.js",
+    "dev": "concurrently --raw --kill-others-on-fail \"yarn server\" \"yarn client\"",
+    "dev:server": "cd client && yarn build && cd .. && yarn start",
+    "start_nodemon": "nodemon --exec babel-node server/index.js",
+    "start": "babel-node server/index.js",
+    "test:run-server": "npm start",
+    "test:execute-test": "mocha --timeout 10000 --require @babel/register 'server/**/*.spec.js'",
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.5",
+    "@babel/node": "^7.7.4",
+    "@babel/preset-env": "^7.7.6",
+    "@babel/preset-react": "^7.7.4",
+    "@babel/register": "^7.7.4",
+    "axios": "^0.19.0",
+    "babel-plugin-macros": "^2.8.0",
+    "babel-plugin-styled-components": "^1.10.6",
+    "chalk": "^3.0.0",
+    "concurrently": "^5.0.1",
+    "morgan": "^1.9.1",
+    "nodemon": "^2.0.2",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.7.2",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-node": "^4.0.0",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react-hooks": "^2.3.0",
+    "prettier": "^1.19.1",
+    "prettier-eslint-cli": "^5.0.0",
+    "stylelint-config-prettier": "^8.0.0",
+    "stylelint-config-recommended": "^3.0.0",
+    "stylelint-config-standard": "^19.0.0",
+    "stylelint-config-styled-components": "^0.1.1"
+  },
+  "dependencies": {
+    "@babel/core": "^7.7.5",
+    "@babel/node": "^7.7.4",
+    "@babel/preset-env": "^7.7.6",
+    "@babel/preset-react": "^7.7.4",
+    "@babel/register": "^7.7.4",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongodb": "^3.4.0",
+    "mongoose": "^5.8.1",
+    "path": "^0.12.7",
+    "chalk": "^3.0.0",
+    "babel-plugin-macros": "^2.8.0",
+    "babel-plugin-styled-components": "^1.10.6",
+    "stylelint-processor-styled-components": "^1.9.0"
+  },
+  "babelMacros": {
+    "styledComponents": {
+      "pure": true
+    }
+  },
+  "cacheDirectories": [
+    "node_modules",
+    "client/node_modules"
+  ],
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "typescript-styled-plugin"
+      }
+    ]
+  },
+  "author": "David Howard",
+  "license": "ISC"
+}
