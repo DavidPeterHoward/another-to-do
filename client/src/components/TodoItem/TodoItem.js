@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import styled, { css } from 'styled-components/macro';
 
-const Todo = styled.div`
+export const Todo = styled.div`
   ${props =>
     props.completed &&
     css`

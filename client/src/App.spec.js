@@ -1,10 +1,13 @@
 import React from 'react';
-// import { render } from '@testing-library/react';
 import App from './App';
+import TodoList from './components/TodoList/TodoList';
 
 describe('<App/> Component', () => {
   it('renders without crashing', () => {
     const wrapper = shallow(<App />);
-    // console.log(wrapper.debug());
+  });
+  it('renders with TodoList', () => {
+    const wrapper = mount(<App />);
+    expect(wrapper.contains(TodoList)).to.equal(true);
   });
 });
