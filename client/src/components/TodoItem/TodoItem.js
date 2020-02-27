@@ -1,10 +1,29 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import styled, { css } from 'styled-components/macro';
 
-const Todo = styled.div``;
+const Todo = styled.div`
+  ${props =>
+    props.completed &&
+    css`
+      text-decoration: line-through;
+      color: red;
+    `}
+`;
 
-const TodoComponent = props => {
-  return <Todo>Test</Todo>;
-};
+export const Checkbox = props => <input type="checkbox" {...props} />;
 
-export default TodoComponent;
+export function useChangeIsChecked(initialState = false) {
+  const [checked, setChecked] = React.useState(initialState);
+  const changeCompleted = React.useCallback(() => setChecked(!checked));
+  return { checked, changeCompleted };
+}
+
+export default function TodoComponent(props) {
+  const { checked, changeCompleted } = useChangeIsChecked(props.completed);
+  return (
+    <Todo completed={checked} onClick={() => changeCompleted()}>
+      {props.children}
+      <Checkbox checked={checked} onChange={() => changeCompleted()} />
+    </Todo>
+  );
+}
