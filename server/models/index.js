@@ -5,7 +5,7 @@ import Author from './author';
 
 const MONGODB_URI =
   process.env.MONGODB_URI ||
-  'mongodb://localhost:27017/sleepylibrary';
+  'mongodb://localhost:27017/testingpractice';
 
 const MONGO_OPTIONS = {
   useNewUrlParser: true,
