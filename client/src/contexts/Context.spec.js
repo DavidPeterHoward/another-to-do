@@ -25,7 +25,7 @@ describe('Reducer Action Tests <ActionReducer/>', () => {
       type: 'DELETE',
       payload: { _id: '1' },
     });
-    expect(newState.items).to.be.empty;
+    expect(newState.items).to.be.an('array').that.is.empty;
   });
   it('cannot delete item with incorrect ID', async () => {
     const state = { items: initialItems };

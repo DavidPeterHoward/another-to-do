@@ -1,5 +1,12 @@
 import React from 'react';
-import TodoComponent, { useChangeIsChecked, Checkbox, Todo } from './TodoItem';
+import TodoComponent, {
+  useChangeIsChecked,
+  useDelete,
+  Checkbox,
+  Todo,
+  DeleteTodo,
+  TodoContainer,
+} from './TodoItem';
 import { ActionProvider, ActionReducer } from '../../contexts/Context';
 
 const StateContext = React.createContext();
@@ -73,6 +80,25 @@ describe('<TodoItem/>', () => {
     });
   });
 
+  describe('useDelete action hook', () => {
+    const { result } = renderHook(() => useDelete('1'), {
+      wrapper: ({ children }) => <ActionProvider>{children}</ActionProvider>,
+    });
+    it('expects initially to be false', () => {
+      expect(result.current.deleted).to.equal(false);
+    });
+    it('HandleDeleteTodo should be a function', () => {
+      expect(result.current.HandleDeleteTodo).to.be.a('function');
+    });
+    it('HandleDeleteTodo should switch deleted from false to true', () => {
+      expect(result.current.deleted).to.equal(false);
+      act(() => {
+        result.current.HandleDeleteTodo();
+      });
+      expect(result.current.deleted).to.equal(true);
+    });
+  });
+
   describe('<Checkbox/> within <TodoComponent/>', async () => {
     let state = { items: items };
     const dispatch = action => {
@@ -81,9 +107,9 @@ describe('<TodoItem/>', () => {
     const wrapper = mount(
       <DispatchContext.Provider value={dispatch}>
         <StateContext.Provider value={state}>
-          <TodoComponent id={items[0]._id} completed={items[0].completed}>
+          <TodoContainer id={items[0]._id} completed={items[0].completed}>
             {items[0].text}
-          </TodoComponent>
+          </TodoContainer>
         </StateContext.Provider>
       </DispatchContext.Provider>,
     );
@@ -101,6 +127,21 @@ describe('<TodoItem/>', () => {
     it('changes checkbox checked state from true to false', () => {
       wrapper.find(Checkbox).simulate('change');
       expect(wrapper.find(Checkbox).prop('checked')).to.equal(false);
+    });
+    it('checks useDelete ', () => {
+      expect(
+        wrapper
+          .find(DeleteTodo)
+          .children()
+          .prop('checkDeleted'),
+      ).to.equal(false);
+      wrapper.find(DeleteTodo).simulate('click');
+      expect(
+        wrapper
+          .find(DeleteTodo)
+          .children()
+          .prop('checkDeleted'),
+      ).to.equal(true);
     });
   });
 });

@@ -20,10 +20,8 @@ const items = [
 const ActionReducer = (state, action) => {
   switch (action.type) {
     case 'CREATE':
-      console.log('CREATE');
       return { ...state, items: [...state.items, action.payload] };
     case 'COMPLETED':
-      console.log('COMPLETED');
       return {
         ...state,
         items: [
@@ -34,15 +32,10 @@ const ActionReducer = (state, action) => {
           ),
         ],
       };
-    case 'READ':
-      console.log('READ');
-      return 12345;
     case 'UPDATE':
       console.log('UPDATE');
       return state;
     case 'DELETE':
-      console.log('DELETE');
-
       return {
         ...state,
         items: [

@@ -29,13 +29,15 @@ export function useChangeIsChecked(initialState = false, id) {
 
 export function useDelete(id) {
   const dispatch = React.useContext(DispatchContext);
+  const [deleted, setDeleted] = React.useState(false);
   const HandleDeleteTodo = () => {
-    dispatch({ type: 'DELETE', payload: { _id: id } });
+    setDeleted(!deleted);
+    dispatch && dispatch({ type: 'DELETE', payload: { _id: id } });
   };
-  return { HandleDeleteTodo };
+  return { HandleDeleteTodo, deleted };
 }
 
-const TodoComponent = props => {
+export const TodoContainer = props => {
   const { checked, changeCompleted } = useChangeIsChecked(
     props.completed,
     props.id,
@@ -51,11 +53,15 @@ const TodoComponent = props => {
   );
 };
 
-const DeleteTodo = props => {
-  const { HandleDeleteTodo } = useDelete(props.id);
-  return <div onClick={HandleDeleteTodo}>X</div>;
+export const DeleteTodo = props => {
+  const { HandleDeleteTodo, deleted } = useDelete(props.id);
+  return (
+    <div onClick={HandleDeleteTodo} checkDeleted={deleted}>
+      X
+    </div>
+  );
 };
 
-const MemoizeTodoComponent = React.memo(TodoComponent);
+const MemoizeTodoComponent = React.memo(TodoContainer);
 
 export default MemoizeTodoComponent;
