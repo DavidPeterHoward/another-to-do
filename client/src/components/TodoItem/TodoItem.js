@@ -53,7 +53,6 @@ const TodoComponent = props => {
 
 const DeleteTodo = props => {
   const { HandleDeleteTodo } = useDelete(props.id);
-
   return <div onClick={HandleDeleteTodo}>X</div>;
 };
 

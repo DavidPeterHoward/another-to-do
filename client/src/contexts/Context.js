@@ -16,7 +16,6 @@ const items = [
   { _id: `${ID()}`, text: 'a single todo item_4', completed: true },
   { _id: `${ID()}`, text: 'a single todo item_5', completed: false },
 ];
-var i = 1;
 
 const ActionReducer = (state, action) => {
   switch (action.type) {
