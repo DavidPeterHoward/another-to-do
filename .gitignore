@@ -9,7 +9,7 @@ package-lock.json
 
 # testing
 /coverage
-
+client/.nyc_output
 # production
 /build
 
