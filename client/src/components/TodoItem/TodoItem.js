@@ -1,5 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components/macro';
+import { DispatchContext } from '../../contexts/Context';
 
 export const Todo = styled.div`
   ${props =>
@@ -12,18 +13,50 @@ export const Todo = styled.div`
 
 export const Checkbox = props => <input type="checkbox" {...props} />;
 
-export function useChangeIsChecked(initialState = false) {
+export function useChangeIsChecked(initialState = false, id) {
+  const dispatch = React.useContext(DispatchContext);
   const [checked, setChecked] = React.useState(initialState);
-  const changeCompleted = React.useCallback(() => setChecked(!checked));
+  const changeCompleted = () => {
+    setChecked(!checked);
+    dispatch &&
+      dispatch({
+        type: 'COMPLETED',
+        payload: { _id: id, completed: initialState },
+      });
+  };
   return { checked, changeCompleted };
 }
 
-export default function TodoComponent(props) {
-  const { checked, changeCompleted } = useChangeIsChecked(props.completed);
-  return (
-    <Todo completed={checked} onClick={() => changeCompleted()}>
-      {props.children}
-      <Checkbox checked={checked} onChange={() => changeCompleted()} />
-    </Todo>
-  );
+export function useDelete(id) {
+  const dispatch = React.useContext(DispatchContext);
+  const HandleDeleteTodo = () => {
+    dispatch({ type: 'DELETE', payload: { _id: id } });
+  };
+  return { HandleDeleteTodo };
 }
+
+const TodoComponent = props => {
+  const { checked, changeCompleted } = useChangeIsChecked(
+    props.completed,
+    props.id,
+  );
+  return (
+    <>
+      <Todo completed={checked} onClick={changeCompleted}>
+        {props.children}
+      </Todo>
+      <Checkbox checked={checked} onChange={changeCompleted} />
+      <DeleteTodo id={props.id} />
+    </>
+  );
+};
+
+const DeleteTodo = props => {
+  const { HandleDeleteTodo } = useDelete(props.id);
+
+  return <div onClick={HandleDeleteTodo}>X</div>;
+};
+
+const MemoizeTodoComponent = React.memo(TodoComponent);
+
+export default MemoizeTodoComponent;

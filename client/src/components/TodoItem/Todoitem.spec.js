@@ -1,21 +1,21 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import TodoComponent, { useChangeIsChecked, Checkbox, Todo } from './TodoItem';
+import { ActionProvider, ActionReducer } from '../../contexts/Context';
 
-var ID = function() {
-  return Math.random()
-    .toString(36)
-    .substr(2, 9);
-};
+const StateContext = React.createContext();
+const DispatchContext = React.createContext();
 
 const items = [
-  { _id: `${ID()}`, text: 'a single todo item', completed: false },
-  { _id: `${ID()}`, text: 'a single todo item_2', completed: false },
-  { _id: `${ID()}`, text: 'a single todo item_3', completed: true },
-  { _id: `${ID()}`, text: 'a single todo item_4', completed: true },
-  { _id: `${ID()}`, text: 'a single todo item_5', completed: false },
+  { _id: `1`, text: 'a single todo item', completed: false },
+  { _id: `2`, text: 'a single todo item_2', completed: false },
+  { _id: `3`, text: 'a single todo item_3', completed: true },
+  { _id: `4`, text: 'a single todo item_4', completed: true },
+  { _id: `5`, text: 'a single todo item_5', completed: false },
 ];
 
 describe('<TodoItem/>', () => {
+  it('##Testing WrappingContext', () => {});
+
   describe('<TodoComponent/> Component', () => {
     it('renders without crashing', () => {
       shallow(<TodoComponent />);
@@ -28,12 +28,21 @@ describe('<TodoItem/>', () => {
       );
       expect(wrapper.prop('completed')).to.equal(items[0].completed);
     });
-    it('changes completed state onClick', () => {
+    it('changes completed state onClick', async () => {
+      let state = { items: items };
+      const dispatch = action => {
+        state = ActionReducer(state, action);
+      };
       const wrapper = mount(
-        <TodoComponent completed={items[0].completed}>
-          {items[0].text}
-        </TodoComponent>,
+        <DispatchContext.Provider value={dispatch}>
+          <StateContext.Provider value={state}>
+            <TodoComponent id={items[0]._id} completed={items[0].completed}>
+              {items[0].text}
+            </TodoComponent>
+          </StateContext.Provider>
+        </DispatchContext.Provider>,
       );
+
       expect(wrapper.find(Todo).prop('completed')).to.equal(false);
       wrapper.find(Todo).simulate('click');
       expect(wrapper.find(Todo).prop('completed')).to.equal(true);
@@ -46,7 +55,9 @@ describe('<TodoItem/>', () => {
 
   describe('useChangeIsChecked custom hook', () => {
     let initialValue = false;
-    const { result } = renderHook(() => useChangeIsChecked(initialValue));
+    const { result } = renderHook(() => useChangeIsChecked(initialValue), {
+      wrapper: ({ children }) => <ActionProvider>{children}</ActionProvider>,
+    });
     it('expects initialValue to be false', () => {
       expect(result.current.checked).to.equal(false);
     });
@@ -62,17 +73,31 @@ describe('<TodoItem/>', () => {
     });
   });
 
-  describe('<Checkbox/> within <TodoComponent/>', () => {
-    const wrapper = mount(<TodoComponent />);
-    it('renders <Checkbox /> within <TodoComponent/> without crashing', () => {
-      const wrapper = shallow(<TodoComponent />);
-      expect(wrapper.containsMatchingElement(<Checkbox />)).to.equal(true);
-    });
-    it('changes checkbox check state', () => {
+  describe('<Checkbox/> within <TodoComponent/>', async () => {
+    let state = { items: items };
+    const dispatch = action => {
+      state = ActionReducer(state, action);
+    };
+    const wrapper = mount(
+      <DispatchContext.Provider value={dispatch}>
+        <StateContext.Provider value={state}>
+          <TodoComponent id={items[0]._id} completed={items[0].completed}>
+            {items[0].text}
+          </TodoComponent>
+        </StateContext.Provider>
+      </DispatchContext.Provider>,
+    );
+    it('changes checkbox check state', async () => {
       expect(wrapper.find(Checkbox).prop('checked')).to.equal(false);
       wrapper.find(Checkbox).simulate('change');
       expect(wrapper.find(Checkbox).prop('checked')).to.equal(true);
     });
+
+    it('renders <Checkbox /> within <TodoComponent/> without crashing', () => {
+      const wrapper = shallow(<TodoComponent />);
+      expect(wrapper.containsMatchingElement(<Checkbox />)).to.equal(true);
+    });
+
     it('changes checkbox checked state from true to false', () => {
       wrapper.find(Checkbox).simulate('change');
       expect(wrapper.find(Checkbox).prop('checked')).to.equal(false);
