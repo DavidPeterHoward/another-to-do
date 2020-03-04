@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import styled, { css } from 'styled-components/macro';
 import { DispatchContext } from '../../contexts/Context';
 
@@ -53,14 +53,14 @@ export const TodoContainer = props => {
   );
 };
 
-export const DeleteTodo = props => {
+export const DeleteTodo = memo(props => {
   const { HandleDeleteTodo, deleted } = useDelete(props.id);
   return (
     <div onClick={HandleDeleteTodo} checkDeleted={deleted}>
       X
     </div>
   );
-};
+});
 
 const MemoizeTodoComponent = React.memo(TodoContainer);
 
